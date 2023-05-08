@@ -41,9 +41,18 @@ router.get('/:id', async function (req, res, next) {
     const db = getDb()
     const collection = db.collection("lodgings")
     if (ObjectId.isValid(id)) {
-        const results = await collection.find({
-            _id: new ObjectId(id)
-        }).toArray()
+        // const results = await collection.find({
+        //     _id: new ObjectId(id)
+        // }).toArray()
+        const results = await collection.aggregate([
+            { $match: { _id: new ObjectId(id) } },
+            { $lookup: {
+                from: "reservations",
+                localField: "_id",
+                foreignField: "lodgingId",
+                as: "reservations"
+            }}
+        ]).toArray()
         if (results.length !== 0) {
             res.status(200).send(results[0])
         } else {

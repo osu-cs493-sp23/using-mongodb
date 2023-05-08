@@ -12,7 +12,7 @@ router.post('/', async function (req, res, next) {
         ...req.body,
         lodgingId: new ObjectId(req.body.lodgingId)
     }
-    const result = await collection.insertOne(req.body)
+    const result = await collection.insertOne(reservation)
     res.status(201).send({
         id: result.insertedId
     })
